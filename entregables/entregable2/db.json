@@ -1,0 +1,22 @@
+{
+    "products": [
+      {
+        "id": 1,
+        "title": "pantalon",
+        "description": "pantalon largo",
+        "price": 2500,
+        "thumbnail": "./",
+        "code": 1,
+        "stock": 23
+      },
+      {
+        "id": 2,
+        "title": "remera",
+        "description": "remera grande",
+        "price": 3500,
+        "thumbnail": "./",
+        "code": 2,
+        "stock": 9
+      }
+    ]
+  }{"products":[{"id":1,"title":"pantalon","description":"pantalon largo","price":2500,"thumbnail":"./","code":1,"stock":23},{"id":2,"title":"remera","description":"remera grande","price":3500,"thumbnail":"./","code":2,"stock":9},{"id":3,"title":"pantalon","description":"pantalon corto","price":2500,"thumbnail":"./","code":4,"stock":20}]}
