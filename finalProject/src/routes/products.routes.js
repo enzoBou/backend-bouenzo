@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const productsList = require("../db/products.json")
 const ProductManager = require("../productManager")
+const { uploader } = require("../utils");
 
 const router = Router();
 const productManager = new ProductManager('../db/products.json');
@@ -11,7 +12,17 @@ router.get(`/`, (req, res) => {
       message: `lista de productos`,
       products: productsList,
     });
-  });
+});
+
+router.post("/", uploader.array("thumbnail"), (req, res) => {
+  const file = req.file;
+  console.log(file);
+  if (!file) return res.status(400).send({ message: "No se pudo cargar el archivo" });
+  const newProduct = req.body;
+  newProduct.thumbnail = `http://localhost:8080/public/uploads/${file.filename}`;
+  productsList.push(newProduct);
+  res.json({ ok: true, message: "Subido correctamente", product: newProduct });
+});
 
 router.get(`/`, async (req, res) => {
     const limit = Number(req.query.limit);

@@ -4,10 +4,12 @@ const ProductManager = require('./productManager');
 const productManager = new ProductManager('./db/products.json');
 
 class CartManager {
+
 	constructor(path) {
 		this.path = path;
 		this.carts = [];
 	}
+
 	async addCart() {
 		try {
 			this.carts = await this.getCarts();
@@ -19,15 +21,17 @@ class CartManager {
 			return error;
 		}
 	};
+
 	async getCarts() {
 		try {
-			return JSON.parse(await fs.promises.readFile(this.path, 'utf-8'));
+			return JSON.parse(await fs.promises.readFile(this.path));
 		} catch (error) {
 			if (error.errno === -4058) fs.writeFileSync(this.path, JSON.stringify(this.products));
 			return this.products;
 		}
 	};
-	async getProdsByCartId(id) {
+
+	async getProductsByCartId(id) {
 		try {
 			this.carts = await this.getCarts();
 			return this.carts.find(cart => cart.id === id).products;
@@ -35,7 +39,8 @@ class CartManager {
 			return error;
 		}
 	};
-	async addProdToCart(cid, pid) {
+
+	async addProductToCart(cid, pid) {
 		const prod = await productManager.getProductById(pid);
 		const cart = await this.getProdsByCartId(cid);
 		if (cart.some(item => item.product === prod.id)) {
@@ -46,6 +51,6 @@ class CartManager {
 		}
 		return await fs.promises.writeFile(this.path, JSON.stringify(this.carts));
 	};
-}
+};
 
 module.exports = CartManager;
