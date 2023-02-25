@@ -8,7 +8,7 @@ class ProductManager {
     };
 
     async addProduct(product) {
-        try {
+		try {
 			this.products = await this.getProducts();
 			const id = this.products.length === 0 ? 1 : this.products[this.products.length - 1].id + 1;
 			this.products.push({ id, ...product });
@@ -17,7 +17,7 @@ class ProductManager {
 			fs.writeFileSync(this.path, JSON.stringify(this.products));
 			return error;
 		}
-    };
+	};
 
 	async getProducts() {
         try {
@@ -31,7 +31,7 @@ class ProductManager {
 	async getProductById(id) {
 		try {
 			this.products = await this.getProducts();
-			return this.products.find(product => product.id === id);
+			return this.products.find(product => product.id === Number(id));
 		} catch (error) {
 			return error;
 		}
@@ -52,15 +52,14 @@ class ProductManager {
 	};
 
     async deleteProductById(id) {
-        try{
-          const products = await this.getProducts(); 
-          const filteredProducts = products.filter(products => products.id !== id);
-          fs.writeFile(this.path, JSON.stringify(filteredProducts), 'utf-8');
-          console.log('Producto eliminado');
-        } catch(error){
-          console.log('error');
-        }
-    };
+        try {
+			this.products = await this.getProducts();
+			this.products = this.products.filter(product => product.id !== Number(id));
+			await fs.promises.writeFile(this.path, JSON.stringify(this.products));
+		} catch (error) {
+			return error;
+		}
+	};
 };
 
 module.exports = ProductManager;

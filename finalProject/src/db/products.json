@@ -1,65 +1,7 @@
-[
-  {
-    "id": 1,
-    "title": "pantalon",
-    "description": "pantalon largo",
-    "price": 2500,
-    "thumbnail": "./",
-    "code": 1,
-    "stock": 23
-  },
-  {
-    "id": 2,
-    "title": "remera",
-    "description": "remera grande",
-    "price": 3500,
-    "thumbnail": "./",
-    "code": 2,
-    "stock": 9
-  },
-  {
-    "id": 3,
-    "title": "medias",
-    "description": "medias cortas",
-    "price": 1500,
-    "thumbnail": "./",
-    "code": 2,
-    "stock": 9
-  },
-  {
-    "id": 4,
-    "title": "zapatillas",
-    "description": "zapatillas air max",
-    "price": 33500,
-    "thumbnail": "./",
-    "code": 2,
-    "stock": 9
-  },
-  {
-    "id": 5,
-    "title": "cintos",
-    "description": "cintos de cuero",
-    "price": 4500,
-    "thumbnail": "./",
-    "code": 2,
-    "stock": 9
-  },
-  {
-    "id": 6,
-    "title": "gorras",
-    "description": "gorras snapback",
-    "price": 2500,
-    "thumbnail": "./",
-    "code": 2,
-    "stock": 9
-  },
-  {
-    "id": 7,
-    "title": "buzos",
-    "description": "buzos oversize",
-    "price": 7500,
-    "thumbnail": "./",
-    "code": 2,
-    "stock": 9
-  }
-]
+[{"id":1,"title":"Pantalon","description":"pantalon largo","price":2500,"thumbnail":"./","code":1,"stock":23,"category":"pantalones"},
+{"id":2,"title":"remera","description":"remera grande","price":3500,"thumbnail":"./","code":2,"stock":9,"category":"remeras"},
+{"id":3,"title":"medias","description":"medias cortas","price":1500,"thumbnail":"./","code":3,"stock":9,"category":"calzados"},
+{"id":4,"title":"zapatillas","description":"zapatillas air max","price":33500,"thumbnail":"./","code":4,"stock":9,"category":"calzados"},
+{"id":5,"title":"cintos","description":"cintos de cuero","price":4500,"thumbnail":"./","code":5,"stock":9,"category":"cintos"},
+{"id":6,"title":"gorras","description":"gorras snapback","price":2500,"thumbnail":"./","code":6,"stock":9,"category":"gorras"},
+{"id":7,"title":"buzos","description":"buzos oversize","price":7500,"thumbnail":"./","code":7,"stock":9,"category":"buzos"}]
