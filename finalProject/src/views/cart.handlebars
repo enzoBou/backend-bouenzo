@@ -1,16 +1,25 @@
-{{#if products}}
-    <h1>Carrito</h1>
-    <div>
-        {{#each products}}
-            <div>
-                <h2>{{this.title}}</h2>
-                <p><b>Descripción:</b> {{this.description}}</p>
-                <p><b>Precio: $</b>{{this.price}}</p>
-                <p><b>Código:</b> {{this.code}}</p>
-                <p><b>Stock:</b> {{this.stock}}</p>
-            </div>
+{{#if cart}}
+    <h1 class='cart-id' data-cart={{ cart._id }}>Carrito {{ cart._id }}</h1>
+    <ul class='cart'>
+        {{#each cart.products}}
+            <li>
+                <input class='prod-id' type="hidden" name={{ this._id }}>
+                <h2>Producto: {{ this.product.title }}</h2>
+                <p>Descripción: {{ this.product.description }}</p>
+                <p>Categoría: {{ this.product.category }}</p>
+                <p>Precio: ${{ this.product.price }}</p>
+                <p>Stock: {{this.product.stock }}</p>
+                <div>Cantidad: <button class='btn-quantity-dec' data-prodid={{ this._id }}>-</button>
+                    {{ this.quantity }}
+                    <button class='btn-quantity-inc' data-prodid={{ this._id }}>+</button>
+                </div>
+                <div>
+                </div>
+            </li>
         {{/each}}
-    </div>
+    </ul>
 {{else}}
-    <p>Carrito vacío</p>
+    <strong>[!] Carrito vacío!!</strong>
 {{/if}}
+
+<script src="/js/cart.js"></script>

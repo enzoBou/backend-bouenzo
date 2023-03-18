@@ -1,14 +1,17 @@
-<h2>Agregar producto</h2>
+<h2 class="form_title">AGREGAR PRODUCTOS</h2>
+<div class='form_container'>
 <form id='add-prod' class='add-prod' method="post" action="">
-    <label for="prod-title">Nombre<input type="text" name='title'></label>
-    <label for="prod-desc">Descripción<input type="text" name='description'></label>
-    <label for="prod-category">Categoría<input type="text" name='category'></label>
-    <label for="prod-price">Precio<input type="text" name='price'></label>
-    <label for="prod-code">Código<input type="text" name='code'></label>
-    <label for="prod-stock">Stock<input type="text" name='stock'></label>
-    <input type="file">
+    <label class="label_form" for="prod-title">Nombre<input type="text" name='title'></label>
+    <label class="label_form" for="prod-desc">Descripción<input type="text" name='description'></label>
+    <label class="label_form" for="prod-category">Categoría<input type="text" name='category'></label>
+    <label class="label_form" for="prod-price">Precio<input type="text" name='price'></label>
+    <label class="label_form" for="prod-code">Código<input type="text" name='code'></label>
+    <label class="label_form" for="prod-stock">Stock<input type="text" name='stock'></label>
+    <input class="input_form" type="file">
     <button id='btn-form'>Agregar Producto</button>
 </form>
+</div>
+
 
 <div id='products-container'></div>
 

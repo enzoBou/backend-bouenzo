@@ -1,12 +1,29 @@
 const router = require('express').Router();
+const productModel = require('../dao/models/product.model');
 const ProductManager = require('../dao/productManager.mongo');
 
 const productManager = new ProductManager();
 
 router.get('/', async (req, res) => {
-	const limit = Number(req.query.limit);
-	const products = await productManager.getProducts();
-	if (limit) return res.status(200).json(products.slice(0, limit));
+	const { limit = 4, page = 1, query = null, sort = 1 } = req.query;
+	const products = await productModel.paginate({}, { lean: true, limit, page });
+	res.status(200).render('products', {
+		status: 'success',
+		payload: products.docs,
+		totalPages: products.totalDocs,
+		prevPage: products.prevPage,
+		nextPage: products.nextPage,
+		page: products.page,
+		hasPrevPage: products.hasPrevPage,
+		hasNextPage: products.hasNextPage,
+		prevLink: products.hasPrevPage ? '' : null,
+		nextLink: products.hasNextPage ? '' : null
+	});
+});
+
+router.get('/filter', async (req, res) => {
+	const { limit = 3, sort = 1 } = req.query;
+	const products = await productModel.aggregate([{ $sort: { price: sort } }, { $limit: limit }]);
 	res.status(200).render('products', { products });
 });
 

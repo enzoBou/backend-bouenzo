@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:pid', async (req, res) => {
 	const product = await productManager.getProduct(req.params.pid);
-	if (!product) return res.status(404).render('home', { message: 'Producto no encontrado' });
+	if (!product) return res.status(404).render({ message: 'Producto no encontrado' });
 	res.status(200).render('product', { product });
 });
 
@@ -35,3 +35,4 @@ router.delete('/:pid', async (req, res) => {
 });
 
 module.exports = router;
+
