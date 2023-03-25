@@ -1,47 +1,37 @@
-const {Router} = require ('express')
-const { find } = require("../dao/models/user.model");
-const userModel = require("../dao/models/user.model");
+const userModel = require('../dao/models/user.model');
 
-const router = Router()
+const router = require('express').Router();
 
-router.get("/logout", async (req,res) => {
-    req.session.destroy((err) => {
-        if(!err) return res.redirect("/views/login")
-        return res.send({message: 'logout error', body: err})
-    });
+router.get('/register', (req, res) => {
+	res.render('register');
 });
 
-router.post("/login", async (req,res) => {
-    try {
-        const { email, password } = req.body;
-        const session = req.session;
-        const findUser = await userModel.findOne({ email });
-        if (!findUser) {
-            return res.json({message: `este usuario no esta registrado`});
-        }
-        if (findUser.password !== password) {
-            return res.json({message: `password incorrecto`});
-        }
-        req.session.user = {
-            ...findUser,
-        };
-        return res.render("products");
-    } catch (error) {
-        console.log(error);
-    }
+router.post('/register', async (req, res) => {
+	const { username, email, password, rol } = req.body;
+	const userExists = await userModel.findOne({ email });
+	if (userExists) return res.status(409).json({ msg: 'Email already registered' });
+	await userModel.create({ username, email, password, rol });
+	res.redirect('/login');
 });
 
-router.post("/register", async (req, res) => {
-    try {
-      const { first_name, last_name, email, age, password } = req.body;
-      const userAdd = { email, password, first_name, last_name, age, password };
-      const newUser = await userModel.create(userAdd);
-  
-      req.session.user = { email, first_name, last_name, age };
-      return res.render(`login`);
-    } catch (error) {
-      console.log(error);
-    }
-  });
+router.get('/login', (req, res) => {
+	if (req.session?.user) return res.redirect('/api/products');
+	res.render('login');
+});
+
+router.post('/login', async (req, res) => {
+	const { email, password } = req.body;
+	const userFound = await userModel.findOne({ email }).lean();
+	if (!userFound) return res.status(404).json({ msg: 'Usuario no encontrado' });
+	if (userFound.password != password) return res.status(409).json({ msg: 'Contraseña inválida' });
+	req.session.user = userFound;
+	res.redirect('/api/products');
+});
+
+router.get('/logout', (req, res) => {
+	req.session.destroy(err => {
+		if (!err) res.status(200).redirect('/login');
+	});
+});
 
 module.exports = router;

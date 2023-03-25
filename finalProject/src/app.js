@@ -10,7 +10,6 @@ const session = require ('express-session')
 const productsRouter = require ("./routes/products.router");
 const cartRouter = require ("./routes/cart.router");
 const chatRouter = require("./routes/chat.router");
-const viewsRouter = require("./routes/views.router");
 const loginRouter = require ('./routes/login.router')
 
 const productModel = require('./dao/models/product.model');
@@ -46,8 +45,7 @@ app.use(express.static(`${__dirname}/public`));
 app.use(`/${BASE_PREFIX}/products`, productsRouter);
 app.use(`/${BASE_PREFIX}/cart`, cartRouter);
 app.use(`/${BASE_PREFIX}/chat`, chatRouter);
-app.use(`/${BASE_PREFIX}/session`, loginRouter);
-app.use(`/views`, viewsRouter);
+app.use(`/`, loginRouter);
 
 app.get('/realtimeproducts', async (req, res) => res.status(200).render('realTimeProducts'));
 

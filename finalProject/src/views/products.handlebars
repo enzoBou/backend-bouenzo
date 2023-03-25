@@ -1,23 +1,36 @@
 {{#if payload}}
-    <h1 class="form_title">Productos</h1>
-    {{#each payload}}
-        <div class="products-container">
-            <h2>{{this.title}}</h2>
-            <p><b>Descripción:</b> {{this.description}}</p>
-            <p><b>Precio: $</b>{{this.price}}</p>
-            <p><b>Código:</b> {{this.code}}</p>
-            <p><b>Stock:</b> {{this.stock}}</p>
-        </div>
-        <button>Añadir al carrito</button>
-    {{/each}}
+	{{#if user}}
+		<p>Hola {{user.username}}</p>
+	{{/if}}
+	<h1>Productos</h1>
+	<div>
+		{{#each payload}}
+			<div>
+				<h2>{{this.title}}</h2>
+				<p><b>Descripción:</b> {{this.description}}</p>
+				<p><b>Precio: $</b>{{this.price}}</p>
+				<p><b>Código:</b> {{this.code}}</p>
+				<p><b>Stock:</b> {{this.stock}}</p>
+			</div>
+		{{/each}}
+	</div>
 {{else}}
-    <p>No hay productos</p>
+	<strong>[!] Nos robaron todo!!</strong>
 {{/if}}
+
 <div>
-    {{#if hasPrevPage}}
-        <a href="?page={{prevPage}}">Prev</a>
-    {{/if}}
-    {{#if hasNextPage}}
-        <a href="?page={{nextPage}}">Next</a>
-    {{/if}}
+	{{#if hasPrevPage}}
+		<a href='?page={{prevPage}}'>Prev</a>
+	{{/if}}
+	{{#if hasNextPage}}
+		<a href='?page={{nextPage}}'>Next</a>
+	{{/if}}
 </div>
+
+{{#if user}}
+	<div>
+		<form action='/logout' method='get'>
+			<button type='submit'>Cerrar Sesión</button>
+		</form>
+	</div>
+{{/if}}
