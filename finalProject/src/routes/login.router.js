@@ -1,37 +1,89 @@
-const userModel = require('../dao/models/user.model');
+const { Router } = require("express");
+const passport = require("passport");
+const userModel = require("../dao/models/user.model");
+const { createHashValue, isValidPassword } = require("../utils/encrypt");
 
-const router = require('express').Router();
+const router = Router();
 
-router.get('/register', (req, res) => {
-	res.render('register');
+router.get("/logout", async (req, res) => {
+  req.session.destroy((err) => {
+    if (!err) return res.redirect("/api/login");
+    return res.send({ message: `logout Error`, body: err });
+  });
 });
 
-router.post('/register', async (req, res) => {
-	const { username, email, password, rol } = req.body;
-	const userExists = await userModel.findOne({ email });
-	if (userExists) return res.status(409).json({ msg: 'Email already registered' });
-	await userModel.create({ username, email, password, rol });
-	res.redirect('/login');
+router.post("/login", async (req, res) => {
+  	try {
+    const { email, password } = req.body;
+    const findUser = await userModel.findOne({ email });
+
+    if (!findUser) {
+      return res.status(401).json({ message: `este usuario no esta registrado` });
+    }
+    const isValidComparePsw = await isValidPassword(password, findUser.password);
+    if (!isValidComparePsw) {
+      return res.json({ message: `password incorrecto` });
+    }
+
+    req.session.user = {
+      ...findUser,
+    };
+
+    return res.render("profile", {
+      username: req.session?.user?.username || findUser.username,
+      email: req.session?.user?.email || email,
+      rol: req.session?.user?.rol || findUser.rol,
+    });
+  	} catch (error) {
+}});
+
+router.post("/register", async (req, res) => {
+  	try {
+    const { username, email, password, rol } = req.body;
+    const pswHashed = await createHashValue(password);
+    const userAdd = {
+		username,
+		email,
+		rol,
+    password: pswHashed,
+    };
+    const newUser = await userModel.create(userAdd);
+    req.session.user = { username, email, password, rol };
+    return res.render(`login`);
+  	} catch (error) {
+}});
+
+router.post("/update", async (req, res) => {
+  try {
+    console.log("BODY UPDATE****", req.body);
+    const { new_password, email } = req.body;
+    const newPswHashed = await createHashValue(new_password);
+    const user = await userModel.findOne({ email });
+    const updateUser = await userModel.findByIdAndUpdate(user._id, {
+      password: newPswHashed,
+    });
+    if (!updateUser) {
+      res.json({ message: "problemas actualizando la contrasena" });
+    }
+    return res.render(`login`);
+  } catch (error) {
+    console.log(error);
+  }
 });
 
-router.get('/login', (req, res) => {
-	if (req.session?.user) return res.redirect('/api/products');
-	res.render('login');
+router.get("/api/github",passport.authenticate("github", { scope: ["user:email"] }),async (req, res) => {
+
 });
 
-router.post('/login', async (req, res) => {
-	const { email, password } = req.body;
-	const userFound = await userModel.findOne({ email }).lean();
-	if (!userFound) return res.status(404).json({ msg: 'Usuario no encontrado' });
-	if (userFound.password != password) return res.status(409).json({ msg: 'Contraseña inválida' });
-	req.session.user = userFound;
-	res.redirect('/api/products');
-});
-
-router.get('/logout', (req, res) => {
-	req.session.destroy(err => {
-		if (!err) res.status(200).redirect('/login');
-	});
-});
+router.get("/api/github/callback",passport.authenticate("github", { failureRedirect: "/api/login" }),
+async (req, res) => {
+  try {
+    req.session.user = req.user;
+    res.redirect("/api/profile");
+  } catch (error) {
+    console.log(error);
+  }
+  }
+);
 
 module.exports = router;
