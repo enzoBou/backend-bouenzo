@@ -13,8 +13,8 @@ const passport = require("passport")
 const productsRouter = require ("./routes/products.router");
 const cartRouter = require ("./routes/cart.router");
 const chatRouter = require("./routes/chat.router");
-const loginRouter = require ('./routes/login.router');
-const viewsRoutes = require ('./utils/views.routes')
+const sessionRouter = require ('./routes/session.router');
+const viewsRoutes = require ('./routes/views.router')
 
 const productModel = require('./dao/models/product.model');
 const ProductManager = require("./dao/productManager.mongo");
@@ -51,7 +51,7 @@ app.use(express.static(`${__dirname}/public`));
 app.use(`/${BASE_PREFIX}/products`, productsRouter);
 app.use(`/${BASE_PREFIX}/cart`, cartRouter);
 app.use(`/${BASE_PREFIX}/chat`, chatRouter);
-app.use(`/`, loginRouter);
+app.use(`/${BASE_PREFIX}/session`, sessionRouter);
 app.use(`/${BASE_PREFIX}`, viewsRoutes);
 
 app.get('/realtimeproducts', async (req, res) => res.status(200).render('realTimeProducts'));

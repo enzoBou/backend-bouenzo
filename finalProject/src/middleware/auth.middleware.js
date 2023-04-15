@@ -1,9 +1,19 @@
-const authMdw = (req, res, next) => {
-	if (req.session?.user) {
-		return next()
-	}
+const passport = require("passport");
 
-	return res.redirect('/api/login');
+const checkAuthJwt = (strategy) => {
+  return async (req, res, next) => {
+    passport.authenticate(strategy, (err, user, info) => {
+      console.log(info);
+      if (err) return next(err);
+      if (!user) {
+        return res
+          .status(401)
+          .json({ message: info.messages ? info.message : info.toString() });
+      }
+      req.user = user;
+      next();
+    })(req, res, next);
+  };
 };
 
-module.exports = authMdw;
+module.exports = checkAuthJwt;
