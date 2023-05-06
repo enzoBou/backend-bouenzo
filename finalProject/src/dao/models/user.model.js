@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const collection = "users";
 
@@ -15,8 +15,16 @@ const userSchema = mongoose.Schema({
 	age: { Number },
 	password: { String },
 	role: { type: String, enum: Object.values(roleType) },
-	cart: {type:[{ref: 'Cart'}]}
+	cart: {
+		type:[
+			{
+			cart: {
+				type: mongoose.Schema.Types.ObjectId,
+				ref: 'Cart'
+			}
+		}]
+	}
 });
 
 const userModel = mongoose.model(collection, userSchema);
-module.exports = userModel;
+export default {userModel}

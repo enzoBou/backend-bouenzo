@@ -1,7 +1,9 @@
-const router = require('express').Router();
-const MessageManager = require('../dao/chatManager.mongo');
+import { Router } from 'express';
+import MessageServiceDao from '../repository/index.js';
 
-const chatManager = new MessageManager();
+const router = Router();
+
+const chatManager = new MessageServiceDao();
 
 router.post('/', async (req, res) => {
 	const { user, message } = req.body;
@@ -14,4 +16,4 @@ router.get('/', async (req, res) => {
 	res.render('chat', { messages });
 });
 
-module.exports = router;
+export default router;

@@ -1,9 +1,9 @@
-const passport = require("passport")
-const GithubStrategy = require("passport-github2")
-const userModel = require("../dao/models/user.model")
-const ROLES = require("./role");
-const jwt = require("passport-jwt");
-const { SECRET_JWT } = require("../utils/jwt")
+import passport from "passport";
+/* import GithubStrategy from 'passport-github2'
+import userModel from "../dao/models/user.model"; */
+import ROLES from "./role.js";
+import jwt from 'passport-jwt'
+import SECRET_JWT from "../utils/jwt.js";
 
 const JWTStrategy = jwt.Strategy;
 const ExtractJWT = jwt.ExtractJwt;
@@ -69,4 +69,4 @@ const initializePassport = () => {
     });
 }; */
 
-module.exports = initializePassport;
+export default initializePassport;

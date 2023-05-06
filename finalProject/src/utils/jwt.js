@@ -1,4 +1,4 @@
-const jwt = require("jsonwebtoken");
+import jwt from 'jsonwebtoken'
 
 const SECRET_JWT = "CLAVEs3p3rs3cr3t4S1s1";
 
@@ -14,7 +14,7 @@ const generateJWT = (user) => {
   });
 };
 
-module.exports = {
+export default {
   generateJWT,
   SECRET_JWT,
 };

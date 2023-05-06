@@ -1,0 +1,8 @@
+# VARIABLES DE ENTORNO
+
+### BASE_PREFIX="api"
+### MONGO_URL='mongodb+srv://enzobou:1535243517enzo@clusterenzo.4qppgwb.mongodb.net/?retryWrites=true&w=majority'
+### PERSISTENCE=MONGO
+### NODE_ENV=Development
+### EMAIL=enzo_cba10@hotmail.com
+### PSW_EMAIL=khxubcsrarvuorcr

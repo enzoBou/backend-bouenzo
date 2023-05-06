@@ -1,12 +1,12 @@
-const cartModel = require('./models/cart.model');
-const producModel = require('./models/product.model');
+import cartModel from '../dao/models/index.js'
+import productModel from '../dao/models/index.js'
 
-class CartManager {
+export default class CartServiceDao {
 	addCart = async () => {
 		try {
 			await cartModel.create({});
 		} catch (error) {
-			console.log(error);
+			return res.status(500).json({ message: error.message });
 		}
 	};
 	getProductsByCartId = async id => {
@@ -14,16 +14,17 @@ class CartManager {
 			const cart = await cartModel.findById(id).populate('products.product').lean();
 			return cart;
 		} catch (error) {
-			console.log(error);
+			return res.status(500).json({ message: error.message });
 		}
 	};
 	addProductToCart = async (cid, pid) => {
 		try {
 			const cart = await cartModel.findById(cid);
-			cart.products.push({ product: pid });
+			const product = await productModel.findById(pid);
+			cart.products.push({ product: product._id, quantity: 1});
 			cart.save();
 		} catch (error) {
-			console.log(error);
+			return res.status(500).json({ message: error.message });
 		}
 	};
 	delProductFromCart = async (cid, pid) => {
@@ -32,7 +33,7 @@ class CartManager {
 				$pull: { products: { _id: pid } }
 			});
 		} catch (error) {
-			console.log(error);
+			return res.status(500).json({ message: error.message });
 		}
 	};
 	delProducts = async cid => {
@@ -41,7 +42,7 @@ class CartManager {
 				$pull: { products: {} }
 			});
 		} catch (error) {
-			console.log(error);
+			return res.status(500).json({ message: error.message });
 		}
 	};
 	updateQuantity = async (cid, pid, quantity) => {
@@ -50,6 +51,5 @@ class CartManager {
 		product.quantity += quantity;
 		cart.save();
 	};
-}
+};
 
-module.exports = CartManager;

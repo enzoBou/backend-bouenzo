@@ -1,6 +1,6 @@
-const messageModel = require('./models/message.model');
+import messageModel from '../dao/models/message.model.js'
 
-class Message {
+export default class MessageServiceDao {
 	addMessage = async (user, message) => {
 		await messageModel.create({ user, message });
 	};
@@ -8,6 +8,4 @@ class Message {
 		const messages = await messageModel.find({}).lean();
 		return messages;
 	};
-}
-
-module.exports = Message;
+};

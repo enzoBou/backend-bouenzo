@@ -1,10 +1,10 @@
-const { Router } = require("express");
-const ROLES = require("../config/role");
-const passport = require("passport");
-const handlePolicies = require("../middleware/handle-policies.middleware");
-const userModel = require("../dao/models/user.model");
-const { createHashValue, isValidPassword } = require("../utils/encrypt");
-const { generateJWT } = require("../utils/jwt");
+import Router from 'express'
+import UserController from '../controller/user.controller.js'
+import handlePolicies from '../middleware/handle-policies.middleware.js'
+import userModel from '../dao/models/index.js'
+import createHashValue from '../utils/encrypt.js'
+import isValidPassword from '../utils/encrypt.js'
+import generateJWT from '../utils/jwt.js'
 
 const router = Router();
 
@@ -78,19 +78,17 @@ router.post("/register", async (req, res) => {
 });
 
 router.get("/current", handlePolicies(["PUBLIC"]), async (req, res) => {
-  console.log(" VALIDANDO REQ", req.user);
-  return res.json({ message: `jwt en las los headers` });
+  const usersDTO = req.user.map(user => usersDTO.toDTO(user));
+  return res.json(usersDTO);
 });
 
 router.get("/current/admin", handlePolicies(["ADMIN"]), async (req, res) => {
-  console.log(" VALIDANDO REQ", req.user);
   return res.json({ message: `jwt en las los headers siendo ADMIN` });
 });
 
 router.get("/current/user", handlePolicies(["USER", "ADMIN"]), async (req, res) => {
-    console.log(" VALIDANDO REQ", req.user);
     return res.json({ message: `jwt en las los headers` });
   }
 );
 
-module.exports = router;
+export default router;

@@ -1,5 +1,5 @@
-const { Router } = require("express");
-const authMdw = require("../middleware/auth.middleware");
+import { Router } from "express";
+import checkAuthJwt from '../middleware/auth.middleware.js'
 
 const router = Router();
 
@@ -15,7 +15,7 @@ router.get("/recover", async (req, res) => {
   res.render("recover");
 });
 
-router.get("/profile", authMdw, async (req, res) => {
+router.get("/profile", checkAuthJwt, async (req, res) => {
   const user = req.session.user;
   res.render("profile", {
     username: user.username,
@@ -24,4 +24,4 @@ router.get("/profile", authMdw, async (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;

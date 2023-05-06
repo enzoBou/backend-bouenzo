@@ -1,30 +1,34 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const handlebars = require("express-handlebars");
-const path = require("path");
-const { Server } = require("socket.io");
-const mongoStore = require ('connect-mongo')
-const cookieParser = require ('cookie-parser');
-const session = require ('express-session');
-const displayRoutes = require("express-routemap");
-const initializePassport = require("./config/passport.config")
-const passport = require("passport")
+import express from 'express'
+import mongoose from 'mongoose';
+import handlebars from 'express-handlebars'
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { Server } from 'socket.io'
+import mongoStore from 'connect-mongo'
+import cookieParser from 'cookie-parser'
+import session from 'express-session'
+import displayRoutes from 'express-routemap'
+import initializePassport from './config/passport.config.js'
+import passport from 'passport';
+import * as dotenv from 'dotenv'
+import cartRouter from './routes/cart.router.js'
+import chatRouter from './routes/chat.router.js'
+import emailRouter from './routes/email.router.js'
+import productsRouter from './routes/products.router.js'
+import sessionRouter from './routes/session.router.js'
+import viewsRouter from './routes/views.router.js'
+import productModel from './dao/models/index.js';
+import ProductServiceDao from "./repository/index.js";
 
-const productsRouter = require ("./routes/products.router");
-const cartRouter = require ("./routes/cart.router");
-const chatRouter = require("./routes/chat.router");
-const sessionRouter = require ('./routes/session.router');
-const viewsRoutes = require ('./routes/views.router')
-
-const productModel = require('./dao/models/product.model');
-const ProductManager = require("./dao/productManager.mongo");
-
-const productManager = new ProductManager;
+dotenv.config();
+const productManager = new ProductServiceDao;
 const app = express();
 const PORT = 8080;
-const BASE_PREFIX = "api";
+const MONGO_URL = process.env.MONGO_URL
+const BASE_PREFIX = process.env.BASE_PREFIX
 const httpServer = app.listen(PORT, () => {displayRoutes(app);console.log(`Listening on ${PORT}`);});
 const socketServer = new Server(httpServer);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -32,27 +36,32 @@ app.use(cookieParser());
 initializePassport();
 app.use(session({
 	store: mongoStore.create({
-		mongoUrl: 'mongodb+srv://enzobou:1535243517enzo@clusterenzo.4qppgwb.mongodb.net/?retryWrites=true&w=majority',
+		mongoUrl: MONGO_URL,
 		mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true},
 		ttl: 60 * 3600,
 	}),
 	secret:'secretSession',
+	rolling: true,
 	resave: false,
-	saveUnitialized:true,
+	saveUninitialized: false,
+	cookie: {
+		maxAge: 60 * 3600,
+		sameSite: 'strict',
+		secure: true
+	}
 }));
 app.use(passport.initialize());
 
 app.engine('handlebars', handlebars.engine());
-app.set('views', path.join(`${__dirname}/views`));
-app.set('view engine', 'handlebars');
-
 app.use(express.static(`${__dirname}/public`));
+app.set('view engine', 'handlebars');
 
 app.use(`/${BASE_PREFIX}/products`, productsRouter);
 app.use(`/${BASE_PREFIX}/cart`, cartRouter);
 app.use(`/${BASE_PREFIX}/chat`, chatRouter);
 app.use(`/${BASE_PREFIX}/session`, sessionRouter);
-app.use(`/${BASE_PREFIX}`, viewsRoutes);
+app.use(`/${BASE_PREFIX}`, viewsRouter);
+app.use(`/mail`, emailRouter);
 
 app.get('/realtimeproducts', async (req, res) => res.status(200).render('realTimeProducts'));
 
@@ -67,4 +76,4 @@ socketServer.on("connection", async socket => {
 	socket.on('delProd', async id => await productManager.deleteProductById(id));
 });
 
-mongoose.connect('mongodb+srv://enzobou:1535243517enzo@clusterenzo.4qppgwb.mongodb.net/?retryWrites=true&w=majority');
+mongoose.connect(MONGO_URL);

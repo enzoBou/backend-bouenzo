@@ -1,4 +1,4 @@
-const bcrypt = require("bcrypt");
+import bcrypt from 'bcrypt'
 
 const createHashValue = async (val) => {
     const salt = await bcrypt.genSalt();
@@ -10,7 +10,7 @@ const isValidPassword = async (psw, encryptedPsw) => {
     return validValue;
 };
 
-module.exports = {
+export default {
     createHashValue,
     isValidPassword,
-}
+};
