@@ -1,8 +1,10 @@
 import CartServiceDao from '../repository/cart.repository.js';
 import ProductService from '../repository/product.repository.js';
 import ticketModel from '../dao/models/ticket.model.js';
+import { ErrorsHTTP, EnumErrors } from '../service/errors/error.handle.js';
 
 const cartServiceDao = new CartServiceDao();
+const httpResp = new ErrorsHTTP();
 
 export default class CartController {
   CartServiceDao;
@@ -15,9 +17,9 @@ export default class CartController {
   async addCart(req, res) {
   try {
     await cartServiceDao.addCart();
-    return res.status(200).json({ message: 'Carrito creado exitosamente' });
+    return httpResp.Created(res, 'Carrito creado con exito');
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return httpResp.Error(res, 'Error al crear el carrito');
   }
   }
 
@@ -25,9 +27,9 @@ export default class CartController {
   const cartId = req.params.cid;
   try {
     const cart = await cartServiceDao.getProductsByCartId(cartId);
-    return res.status(200).json({ cart });
+    return httpResp.OK(res, { cart });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return httpResp.Error(res, 'Error al obtener el producto');
   }
   }
 
@@ -36,9 +38,9 @@ export default class CartController {
   const productId = req.params.pid;
   try {
     await cartServiceDao.addProductToCart(cartId, productId);
-    return res.status(200).json({ message: 'Producto agregado al carrito exitosamente' });
+    return httpResp.OK(res, 'Producto agregado correctamente');
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return httpResp.Error(res, 'Error al añadir el producto al carrito');
   }
   }
 
@@ -47,9 +49,9 @@ export default class CartController {
   const productId = req.params.pid;
   try {
     await cartServiceDao.delProductFromCart(cartId, productId);
-    return res.status(200).json({ message: 'Producto eliminado del carrito exitosamente' });
+    return httpResp.OK(res, 'Producto eliminado del carrito exitosamente');
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return httpResp.Error(res, 'Error al eliminar el carrito');
   }
   }
 
@@ -57,9 +59,9 @@ export default class CartController {
   const cartId = req.params.cid;
   try {
     await cartServiceDao.delProducts(cartId);
-    return res.status(200).json({ message: 'Productos eliminados del carrito exitosamente' });
+    return httpResp.OK(res, 'Productos eliminados del carrito exitosamente');
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return httpResp.Error(res, 'Error al eliminar el carrito');
   }
   }
 
@@ -69,9 +71,9 @@ export default class CartController {
   const quantity = req.body.quantity;
   try {
     await cartServiceDao.updateQuantity(cartId, productId, quantity);
-    return res.status(200).json({ message: 'Cantidad actualizada exitosamente' });
+    return httpResp.OK(res, 'Cantidad actualizada exitosamente');
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return httpResp.Error(res, 'Error al actualizar el carrito');
   }
   }
 
@@ -106,13 +108,14 @@ export default class CartController {
       await this.CartServiceDao.removeProducts(cid, productsToRemove);
       await Promise.all(productsToUpdate.map(product => this.ProductService.updateProduct(product)));
 
-      return res.status(200).json({
+      return httpResp.OK({
+        res,
         message: 'Compra realizada con éxito',
         ticket,
         productsNotPurchased: productsToRemove,
       });
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return httpResp.Error(res, 'Error al comprar el carrito');
     }
   }
 }

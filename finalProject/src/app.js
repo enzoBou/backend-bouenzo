@@ -17,8 +17,11 @@ import emailRouter from './routes/email.router.js'
 import productsRouter from './routes/products.router.js'
 import sessionRouter from './routes/session.router.js'
 import viewsRouter from './routes/views.router.js'
+import mockingRouter from './routes/mocking.router.js'
 import productModel from './dao/models/index.js';
 import ProductServiceDao from "./repository/index.js";
+import compression from 'express-compression';
+import addLogger from './utils/logger.js'
 
 dotenv.config();
 const productManager = new ProductServiceDao;
@@ -33,6 +36,11 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(compression({
+	brotli: {enabled: true, zlib: {} } 
+}));
+app.use(addLogger)
+
 initializePassport();
 app.use(session({
 	store: mongoStore.create({
@@ -62,6 +70,7 @@ app.use(`/${BASE_PREFIX}/chat`, chatRouter);
 app.use(`/${BASE_PREFIX}/session`, sessionRouter);
 app.use(`/${BASE_PREFIX}`, viewsRouter);
 app.use(`/mail`, emailRouter);
+app.use(`/mockingproducts`, mockingRouter);
 
 app.get('/realtimeproducts', async (req, res) => res.status(200).render('realTimeProducts'));
 

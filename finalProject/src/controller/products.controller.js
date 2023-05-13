@@ -1,5 +1,8 @@
 import { ProductService } from "../repository/index.js";
 import { paginateResults } from "../utils/paginate.js";
+import { EnumErrors, ErrorsHTTP } from "../service/errors/error.handle.js";
+
+const httpResp = new ErrorsHTTP();
 
 export default class ProductCtrl {
   productService;
@@ -24,10 +27,7 @@ export default class ProductCtrl {
         prevPage: paginatedResults.prevPage
       });
     } catch (error) {
-      return res.status(500).json({
-        message: 'Something went wrong in getProducts',
-        error: error.message
-      });
+      return httpResp.Error(res, 'Error al obtener los productos');
     }
   };
 
@@ -40,10 +40,7 @@ export default class ProductCtrl {
         products: filteredProducts
       });
     } catch (error) {
-      return res.status(500).json({
-        message: 'Something went wrong in filterProducts',
-        error: error.message
-      });
+      return httpResp.Error(res, 'Error al filtrar los productos');
     }
   };
 
@@ -53,9 +50,7 @@ export default class ProductCtrl {
       const product = await this.productService.getProductById(pid);
 
       if (!product) {
-        return res.status(404).json({
-          message: 'Product not found'
-        });
+        return httpResp.NotFound(res, 'Error 404 not found');
       }
 
       return res.json({
@@ -63,10 +58,7 @@ export default class ProductCtrl {
         product: product
       });
     } catch (error) {
-      return res.status(500).json({
-        message: 'Something went wrong in getProductById',
-        error: error.message
-      });
+      return httpResp.Error(res, 'Error al filtrar los productos por ID');
     }
   };
 
@@ -79,10 +71,7 @@ export default class ProductCtrl {
         product: newProduct
       });
     } catch (error) {
-      return res.status(500).json({
-        message: 'Something went wrong in addProduct',
-        error: error.message
-      });
+      return httpResp.Error(res, 'Error al agregar los productos');
     }
   };
 
@@ -94,9 +83,7 @@ export default class ProductCtrl {
       const updatedProduct = await this.productService.updateProduct(pid, productData);
   
       if (!updatedProduct) {
-        return res.status(404).json({
-          message: 'Product not found'
-        });
+        return httpResp.NotFound(res, 'Error 404 not found');
       }
   
       return res.json({
@@ -104,11 +91,7 @@ export default class ProductCtrl {
         product: updatedProduct
       });
     } catch (error) {
-      return res.status(500).json({
-        message: 'Something went wrong in updateProduct',
-        error: error.message
-      });
+      return httpResp.Error(res, 'Error al actualizar los productos');
     }
   };
-  
-}
+};
