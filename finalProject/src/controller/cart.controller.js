@@ -1,7 +1,7 @@
 import CartServiceDao from '../repository/cart.repository.js';
 import ProductService from '../repository/product.repository.js';
 import ticketModel from '../dao/models/ticket.model.js';
-import { ErrorsHTTP, EnumErrors } from '../service/errors/error.handle.js';
+import ErrorsHTTP from '../service/errors/error.handle.js';
 
 const cartServiceDao = new CartServiceDao();
 const httpResp = new ErrorsHTTP();

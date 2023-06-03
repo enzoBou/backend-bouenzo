@@ -1,6 +1,6 @@
 import { ProductService } from "../repository/index.js";
 import { paginateResults } from "../utils/paginate.js";
-import { EnumErrors, ErrorsHTTP } from "../service/errors/error.handle.js";
+import ErrorsHTTP from "../service/errors/error.handle.js";
 
 const httpResp = new ErrorsHTTP();
 

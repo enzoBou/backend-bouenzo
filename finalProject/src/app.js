@@ -22,7 +22,10 @@ import loggerTest from './routes/loggerTest.js';
 import productModel from './dao/models/index.js';
 import ProductServiceDao from "./repository/index.js";
 import compression from 'express-compression';
-import addLogger from './utils/logger.js';
+import {addLogger} from './utils/logger.js';
+import swaggerJSDoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
+import { swaggerOpts } from './config/swagger.config.js'
 
 dotenv.config();
 const productManager = new ProductServiceDao;
@@ -33,6 +36,7 @@ const BASE_PREFIX = process.env.BASE_PREFIX;
 const httpServer = app.listen(PORT, () => {displayRoutes(app);console.log(`Listening on ${PORT}`);});
 const socketServer = new Server(httpServer);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const specs = swaggerJSDoc(swaggerOpts);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -73,6 +77,7 @@ app.use(`/${BASE_PREFIX}`, viewsRouter);
 app.use(`/mail`, emailRouter);
 app.use(`/mockingproducts`, mockingRouter);
 app.use(`/${BASE_PREFIX}/loggerTest`, loggerTest);
+app.use("/api/docs/", swaggerUi.serve, swaggerUi.setup(specs));
 
 app.get('/realtimeproducts', async (req, res) => res.status(200).render('realTimeProducts'));
 

@@ -44,4 +44,16 @@ router.post("/send", async (req, res) => {
   }
 });
 
+router.get('/restablecer-contrasena/:token', (req, res) => {
+  User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } })
+    .then(user => {
+      if (!user) {
+        // El token es inválido o ha expirado
+        return res.redirect('/generar-correo-restablecimiento');
+      }
+
+      res.render('restablecer-contrasena', { token: req.params.token });
+    });
+});
+
 export default router;
